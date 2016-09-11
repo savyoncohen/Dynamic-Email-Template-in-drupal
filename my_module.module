@@ -23,8 +23,6 @@ function my_module_theme($existing, $type, $theme, $path) {
 // Use the themes to render the message
 function my_module_render_message($message) {
 
-  // Load the message.
-  $message = message_create('newsletter', array('uid' => $node->uid));
   $message_wrapper = entity_metadata_wrapper('message', $message);
 
   // Wrap the articles in the content template.
@@ -50,6 +48,7 @@ function my_module_render_message($message) {
 // Use the message module to send the email.
 function my_module_send_messages($message) {
 
+  $message = message_create('newsletter', array('uid' => $node->uid));
   $message_wrapper = entity_metadata_wrapper('message', $message);
   $email = $message_wrapper->email->value();
   // Render the message body.
