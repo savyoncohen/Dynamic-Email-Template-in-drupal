@@ -19,7 +19,7 @@ function my_module_theme($existing, $type, $theme, $path) {
   );
 }
 
-// Use module message to send the message
+// Use the themes to render the message
 function my_module_render_message($message) {
 
   // Load the message.
@@ -46,6 +46,7 @@ function my_module_render_message($message) {
   return theme('my_module_email_template_wrapper', $variables);
 }
 
+// Use the message module to send the email.
 function my_module_send_messages($message) {
 
   $message_wrapper = entity_metadata_wrapper('message', $message);
@@ -57,9 +58,8 @@ function my_module_send_messages($message) {
   $success = message_notify_send_message($message, array('mail' => $email));
 }
 
-
+// My message view.
 function my_module_menu() {
-  // My message view.
   $items['my-message-view/%'] = array(
     'title' => 'My message view',
     'page callback' => 'my_module_render_message',
