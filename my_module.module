@@ -20,7 +20,7 @@ function my_module_theme($existing, $type, $theme, $path) {
 }
 
 // Use module message to send the message
-function my_module_send_messages_immediate() {
+function my_module_render_message($message) {
 
   // Load the message.
   $message = message_create('newsletter', array('uid' => $node->uid));
@@ -42,11 +42,30 @@ function my_module_send_messages_immediate() {
   $account = $wrapper_message->user;
   $user_name = !empty($account->name->value()) ? $account->name->value() : '';
   $variables['user_name'] = $user_name;
-  $email = $account->email->value();
+  
+  return theme('my_module_email_template_wrapper', $variables);
+}
 
+function my_module_send_messages($message) {
+
+  $message_wrapper = entity_metadata_wrapper('message', $message);
+  $email = $message_wrapper->email->value();
   // Render the message body.
-  $message->arguments['!body'] = theme('my_module_email_template_wrapper', $variables);
-  ```
+  $message->arguments['!body'] = my_module_render_message($message);
+
   // Send the message
   $success = message_notify_send_message($message, array('mail' => $email));
+}
+
+
+function my_module_menu() {
+  // My message view.
+  $items['my-message-view/%'] = array(
+    'title' => 'My message view',
+    'page callback' => 'my_module_render_message',
+    'access arguments' => array('access content'),
+    'page arguments' => array(1),
+  );
+
+  return $items;
 }
