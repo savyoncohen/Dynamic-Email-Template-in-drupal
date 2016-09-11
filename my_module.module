@@ -1,0 +1,52 @@
+function my_module_theme($existing, $type, $theme, $path) {
+  return array(
+    'my_module_email_template_wrapper' => array(
+      'variables' => array(
+        'user_name' => NULL,
+        'content' => NULL,
+      ),
+      'template' => 'email-wrapper-template',
+      'path' => drupal_get_path('module', 'my_module') . '/templates',
+    ),
+    'my_module_email_template_content' => array(
+      'variables' => array(
+        'title' => NULL,
+        'summary' => NULL,
+      ),
+      'template' => 'email-content-template',
+      'path' => drupal_get_path('module', 'my_module') . '/templates',
+    ),
+  );
+}
+
+// Use module message to send the message
+function my_module_send_messages_immediate() {
+
+  // Load the message.
+  $message = message_create('newsletter', array('uid' => $node->uid));
+  $message_wrapper = entity_metadata_wrapper('message', $message);
+
+  // Wrap the articles in the content template.
+  foreach($wrapper_message->field_articles as $article) {
+
+    $variables['article'] = array(
+      'title' => $article->title,
+      'summary' => $article->summary,
+    );
+
+    // Push the content to a wrapper variable.
+    $variables['content'][] = theme('my_module_email_template_content', $variables['article']);
+  }
+
+  // The user variable
+  $account = $wrapper_message->user;
+  $user_name = !empty($account->name->value()) ? $account->name->value() : '';
+  $variables['user_name'] = $user_name;
+  $email = $account->email->value();
+
+  // Render the message body.
+  $message->arguments['!body'] = theme('my_module_email_template_wrapper', $variables);
+  ```
+  // Send the message
+  $success = message_notify_send_message($message, array('mail' => $email));
+}
