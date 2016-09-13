@@ -33,7 +33,7 @@ function my_module_render_message($message) {
       'summary' => $article->summary,
     );
 
-    // Push the content to a wrapper variable.
+    // Push the content to the wrapper template variable.
     $variables['content'][] = theme('my_module_email_template_content', $variables['article']);
   }
 
@@ -51,14 +51,15 @@ function my_module_send_messages($message) {
   $message = message_create('newsletter', array('uid' => $node->uid));
   $message_wrapper = entity_metadata_wrapper('message', $message);
   $email = $message_wrapper->email->value();
+  
   // Render the message body.
   $message->arguments['!body'] = my_module_render_message($message);
 
-  // Send the message
+  // Send the message.
   $success = message_notify_send_message($message, array('mail' => $email));
 }
 
-// My message view.
+// Message email debug.
 function my_module_menu() {
   $items['message-email-debug/%'] = array(
     'title' => 'Message email debug',
