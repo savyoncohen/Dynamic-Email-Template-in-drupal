@@ -60,8 +60,8 @@ function my_module_send_messages($message) {
 
 // My message view.
 function my_module_menu() {
-  $items['my-message-menu/%'] = array(
-    'title' => 'My message',
+  $items['message-email-debug/%'] = array(
+    'title' => 'Message email debug',
     'page callback' => 'my_module_render_message',
     'access arguments' => array('access content'),
     'page arguments' => array(1),
